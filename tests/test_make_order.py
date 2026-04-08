@@ -29,8 +29,8 @@ class TestMakeOrder:
         assert response.status_code == 200 and '"success":true' in response.text
 
     @allure.title('Создание заказа с авторизацией и без ингредиентов')
-    @allure.description('Проверка статуса 200 и success: True и email авторизованного пользователя с авторизацией и без ингредиентов')
-    def test_make_order_with_auth_and_without_ingredientssuccess_order(self, user_login):
+    @allure.description('Проверка статуса 400, success: false и message: Ingredient ids must be provided с авторизацией и без ингредиентов')
+    def test_make_order_with_auth_and_without_ingredients_error_400(self, user_login):
         with allure.step("Извлекаем токен из фикстуры."):
             accessToken = user_login['token'][0]
         with allure.step("Извлекаем email из фикстуры."):
@@ -43,8 +43,8 @@ class TestMakeOrder:
         assert response.status_code == 400 and response.text == '{"success":false,"message":"Ingredient ids must be provided"}'
 
     @allure.title('Создание заказа без авторизации и без ингредиентов')
-    @allure.description('Проверка статуса 200 и success: True без авторизации и без ингредиентов')  
-    def test_make_order_without_auth_and_without_ingredients_success_order(self):
+    @allure.description('Проверка статуса 400, success: false и message: Ingredient ids must be provided без авторизации и без ингредиентов')  
+    def test_make_order_without_auth_and_without_ingredients_error_400(self):
         with allure.step("Создаем тело запроса с ingredients."):
             payload = {"ingredients": []}
         with allure.step("Отправляем запрос на создание заказа."):
@@ -52,8 +52,8 @@ class TestMakeOrder:
         assert response.status_code == 400 and response.text == '{"success":false,"message":"Ingredient ids must be provided"}'
 
     @allure.title('Создание заказа с авторизацией и неверным хешем ингредиентов')
-    @allure.description('Проверка статуса 200 и success: True и email авторизованного пользователя с авторизацией и неверным хешем ингредиентов')
-    def test_make_order_with_auth_and_wrong_ingredients_success_order(self, user_login):
+    @allure.description('Проверка статуса 500 с авторизацией и неверным хешем ингредиентов')
+    def test_make_order_with_auth_and_wrong_ingredients_error_500(self, user_login):
         with allure.step("Извлекаем токен из фикстуры."):
             accessToken = user_login['token'][0]
         with allure.step("Извлекаем email из фикстуры."):
@@ -66,8 +66,8 @@ class TestMakeOrder:
         assert response.status_code == 500
 
     @allure.title('Создание заказа без авторизации и неверным хешем ингредиентов')
-    @allure.description('Проверка статуса 200 и success: True без авторизации и неверным хешем ингредиентов')  
-    def test_make_order_without_auth_and_wrong_ingredients_success_order(self):
+    @allure.description('Проверка статуса 500 без авторизации и неверным хешем ингредиентов')  
+    def test_make_order_without_auth_and_wrong_ingredients_error_500(self):
         with allure.step("Создаем тело запроса с ingredients."):
             payload = {"ingredients": [generate_password(8)]}
         with allure.step("Отправляем запрос на создание заказа."):
